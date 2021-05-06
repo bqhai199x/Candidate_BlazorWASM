@@ -1,0 +1,46 @@
+﻿@page "/"
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary mt-3" @onclick="() => ShowModal(0)">
+    Thêm ứng viên
+</button>
+
+<SearchBox OnSearchSubmit="Search"/>
+
+<!-- List candidate -->
+<table class="table table-bordered">
+    <thead>
+        <tr class="text-center bg-secondary text-white">
+            <th scope="col">Chức danh</th>
+            <th scope="col">Vị trí</th>
+            <th scope="col">Họ tên</th>
+            <th scope="col">Ngày sinh</th>
+            <th scope="col">Địa chỉ</th>
+            <th scope="col">Số điện thoại</th>
+            <th scope="col">Email</th>
+            <th scope="col">Người giới thiệu</th>
+            <th scope="col">CV</th>
+            <th scope="col">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in lstCandi)
+        {
+            <tr>
+                <td>@item.Level.LevelName</td>
+                <td>@item.Position.PositionName</td>
+                <td>@item.FullName</td>
+                <td>@item.Birthday</td>
+                <td>@item.Address</td>
+                <td>@item.Phone</td>
+                <td>@item.Email</td>
+                <td>@item.IntroduceName</td>
+                <td><button class="btn btn-link" @onclick="() => ShowCV(item.CandidateId)">@item.CVPath</button></td>
+                <td class="text-center">
+                    <button class="btn btn-outline-success btn-sm mr-1" @onclick="() => ShowModal(item.CandidateId)">Sửa</button>
+                    <button class="btn btn-outline-danger btn-sm" @onclick="() => Delete(item.CandidateId)">Xoá</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
