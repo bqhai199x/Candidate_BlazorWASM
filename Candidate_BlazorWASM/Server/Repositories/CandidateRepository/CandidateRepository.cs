@@ -1,7 +1,8 @@
 ﻿using Candidate_BlazorWASM.Server.Data;
+using Candidate_BlazorWASM.Server.Extensions;
 using Candidate_BlazorWASM.Shared;
+using Candidate_BlazorWASM.Shared.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Candidate_BlazorWASM.Server.Repositories
@@ -15,12 +16,17 @@ namespace Candidate_BlazorWASM.Server.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Candidate>> GetAll()
+        public async Task<PagedList<Candidate>> GetAll(Parameters parameters)
         {
-            return await _context.Candidate
+            var candidates = await _context.Candidate
+                .Search(parameters.SearchTerm)
+                .Sort(parameters.OrderBy)
                 .Include(x => x.Level)
                 .Include(x => x.Position)
                 .ToListAsync();
+
+            return PagedList<Candidate>
+                .ToPagedList(candidates, parameters.PageNumber, parameters.PageSize);
         }
 
         public async Task<Candidate> GetById(int candidateId)
@@ -31,11 +37,10 @@ namespace Candidate_BlazorWASM.Server.Repositories
                 .FirstOrDefaultAsync(x => x.CandidateId == candidateId);
         }
 
-        public async Task<Candidate> Create(Candidate candidate)
+        public async Task Create(Candidate candidate)
         {
-            var result = await _context.Candidate.AddAsync(candidate);
+            _context.Add(candidate);
             await _context.SaveChangesAsync();
-            return result.Entity; ;
         }
 
         public async Task<Candidate> Update(Candidate candidate)
@@ -81,5 +86,7 @@ namespace Candidate_BlazorWASM.Server.Repositories
             }
             return null;
         }
+
+        
     }
 }

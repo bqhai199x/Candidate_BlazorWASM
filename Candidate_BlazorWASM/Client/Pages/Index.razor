@@ -1,11 +1,19 @@
 ﻿@page "/"
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mt-3" @onclick="() => ShowModal(0)">
-    Thêm ứng viên
-</button>
-
-<SearchBox OnSearchSubmit="Search"/>
+<div class="row mb-3 mt-1">
+    <div class="col-md-4">
+        <SearchBox OnSearchChanged="SearchChanged" />
+    </div>
+    <div class="col-md-3">
+        <SortBar OnSortChanged="SortChanged" />
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-primary float-right" @onclick="() => ShowInfo(0)">
+            Thêm ứng viên
+        </button>
+    </div>
+</div>
 
 <!-- List candidate -->
 <table class="table table-bordered">
@@ -35,12 +43,16 @@
                 <td>@item.Phone</td>
                 <td>@item.Email</td>
                 <td>@item.IntroduceName</td>
-                <td><button class="btn btn-link" @onclick="() => ShowCV(item.CandidateId)">@item.CVPath</button></td>
+                <td><button class="btn btn-link">@item.CVPath</button></td>
                 <td class="text-center">
-                    <button class="btn btn-outline-success btn-sm mr-1" @onclick="() => ShowModal(item.CandidateId)">Sửa</button>
-                    <button class="btn btn-outline-danger btn-sm" @onclick="() => Delete(item.CandidateId)">Xoá</button>
+                    <button class="btn btn-success btn-sm mr-1" @onclick="() => ShowInfo(item.CandidateId)">Sửa</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => Delete(item.CandidateId)">Xoá</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<AddEditModal CandiId="CandiId" Display="Display" OnClose="OnClose"/>
+
+<Pagination MetaData="MetaData" Spread="2" SelectedPage="SelectedPage" />

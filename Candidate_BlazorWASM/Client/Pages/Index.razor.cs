@@ -1,6 +1,9 @@
-﻿using Candidate_BlazorWASM.Client.Services;
+﻿using Candidate_BlazorWASM.Client.Components;
+using Candidate_BlazorWASM.Client.Services;
 using Candidate_BlazorWASM.Shared;
+using Candidate_BlazorWASM.Shared.RequestFeatures;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,68 +16,68 @@ namespace Candidate_BlazorWASM.Client.Pages
         ICandidateService candidateService { get; set; }
 
         [Inject]
-        IPositionService positionService { get; set; }
-
-        [Inject]
-        ILevelService levelService { get; set; }
-
-        private string searchStr { get; set; }
-
-        private Candidate candi = new();
-
-        private List<Level> lstLevel = new();
-
-        private List<Position> lstPosition = new();
+        public IJSRuntime Js { get; set; }
 
         private List<Candidate> lstCandi = new();
 
-        protected override async Task OnInitializedAsync()
-        {
-            lstCandi = (await candidateService.GetAll()).ToList();
-            lstLevel = (await levelService.GetAll()).ToList();
-            lstPosition = (await positionService.GetAll()).ToList();
+        public MetaData MetaData { get; set; } = new MetaData();
 
+        private Parameters parameters = new Parameters();
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await GetCandidates();
+        }
+        protected async Task SearchChanged(string searchTerm)
+        {
+            parameters.PageNumber = 1;
+            parameters.SearchTerm = searchTerm;
+            await GetCandidates();
         }
 
-        protected async Task ShowModal(int id)
+        protected async Task SelectedPage(int page)
         {
-            candi = new();
-            if (id != 0)
+            parameters.PageNumber = page;
+            await GetCandidates();
+        }
+        protected async Task GetCandidates()
+        {
+            var pagingResponse = await candidateService.GetAll(parameters);
+            lstCandi = pagingResponse.Items;
+            MetaData = pagingResponse.MetaData;
+        }
+
+        protected async Task SortChanged(string orderBy)
+        {
+            parameters.OrderBy = orderBy;
+            await GetCandidates();
+        }
+
+        //Show Modal Add Edit
+        public int CandiId { get; set; }
+        public bool Display { get; set; }
+        protected void ShowInfo(int candiId)
+        {
+            Display = true;
+            CandiId = candiId;
+            StateHasChanged();
+        }
+
+        protected async Task OnClose()
+        {
+            await GetCandidates();
+            Display = false;
+        }
+
+        protected async Task Delete(int candiId)
+        {
+            var candiName = lstCandi.FirstOrDefault(x => x.CandidateId == candiId);
+            var confirmed = await Js.InvokeAsync<bool>("confirm", $" Bạn có chắc muốn xoá ứng viên {candiName.FullName}?");
+            if (confirmed)
             {
-                candi = await candidateService.GetById(id);
+                await candidateService.Delete(candiId);
+                await GetCandidates();
             }
-        }
-
-        protected async Task ShowCV(int id)
-        {
-            candi = await candidateService.GetById(id);
-        }
-
-
-        protected async Task Delete(int id)
-        {
-            await candidateService.Delete(id);
-        }
-
-        
-
-        protected async Task PutPost()
-        {
-            if (candi.CandidateId == 0)
-            {
-                await candidateService.Create(candi);
-            }
-            else
-            {
-                await candidateService.Update(candi);
-            }
-        }
-
-        protected async Task Search(string searchStr)
-        {
-            lstCandi = (await candidateService.GetAll()).ToList();
-            if (!string.IsNullOrWhiteSpace(searchStr))
-                lstCandi = candidateService.Search(lstCandi, searchStr).ToList();
         }
     }
 }

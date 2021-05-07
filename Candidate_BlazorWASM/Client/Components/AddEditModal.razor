@@ -1,0 +1,95 @@
+﻿@if (Display)
+{
+    <div class="modal fade show d-block">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nhập ứng viên</h5>
+                    <button type="button" class="close" @onclick="Hide">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="candi" OnValidSubmit="Save">
+                        <DataAnnotationsValidator />
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Chức danh</label>
+                                <InputSelect class="custom-select" @bind-Value="candi.LevelId">
+                                    <option hidden></option>
+                                    @foreach (var item in lstLevel)
+                                        {
+                                        <option value="@item.LevelId">@item.LevelName</option>
+                                        }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => candi.LevelId)"/>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Vị trí</label>
+                                <InputSelect class="custom-select" @bind-Value="candi.PositionId">
+                                    <option hidden></option>
+                                    @foreach (var item in lstPosition)
+                                        {
+                                        <option value="@item.PositionId">@item.PositionName</option>
+                                        }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => candi.PositionId)" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Import CV</label>
+                                <div class="custom-file">
+                                    <InputFile id="customFile" OnChange="OnInputFileChange" multiple />
+                                    @*<label class="custom-file-label" for="customFile">Choose file</label>*@
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Người giới thiệu</label>
+                                <InputText class="form-control" @bind-Value="@candi.IntroduceName" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Họ tên</label>
+                                <InputText class="form-control" @bind-Value="@candi.FullName" />
+                                <ValidationMessage For="@(() => candi.FullName)" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Phone</label>
+                                <InputText class="form-control" @bind-Value="@candi.Phone" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputBirthday">Birthday</label>
+                                <InputText type="text" class="form-control" @bind-Value="@candi.Birthday" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail">Email</label>
+                                <InputText type="text" class="form-control" @bind-Value="@candi.Email" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="inputAddress">Address</label>
+                                <InputText type="text" class="form-control" @bind-Value="@candi.Address" />
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success">
+                                <span>Save</span>
+                            </button>
+                        </div>
+                    </EditForm>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,9 +1,15 @@
-﻿using Candidate_BlazorWASM.Shared;
+﻿using Candidate_BlazorWASM.Client.Features;
+using Candidate_BlazorWASM.Shared;
+using Candidate_BlazorWASM.Shared.RequestFeatures;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Candidate_BlazorWASM.Client.Services
@@ -17,9 +23,27 @@ namespace Candidate_BlazorWASM.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Candidate>> GetAll()
+        public async Task<PagingResponse<Candidate>> GetAll(Parameters parameters)
         {
-            return await _httpClient.GetFromJsonAsync<Candidate[]>("api/candidate");
+            var queryStringParam = new Dictionary<string, string>
+            {
+                ["pageNumber"] = parameters.PageNumber.ToString(),
+                ["searchTerm"] = parameters.SearchTerm == null ? "" : parameters.SearchTerm,
+                ["orderBy"] = parameters.OrderBy
+            };
+            var response = await _httpClient.GetAsync(QueryHelpers.AddQueryString("api/candidate", queryStringParam));
+            var content = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ApplicationException(content);
+            }
+            var pagingResponse = new PagingResponse<Candidate>
+            {
+                Items = JsonSerializer.Deserialize<List<Candidate>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }),
+                MetaData = JsonSerializer.Deserialize<MetaData>(response.Headers.GetValues("X-Pagination").First(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            };
+
+            return pagingResponse;
         }
 
         public async Task<Candidate> GetById(int candidateId)
@@ -29,12 +53,12 @@ namespace Candidate_BlazorWASM.Client.Services
 
         public async Task Update(Candidate candidate)
         {
-            await _httpClient.PutAsJsonAsync($"/api/candidate", candidate);
+            await _httpClient.PutAsJsonAsync("api/candidate", candidate);
         }
 
         public async Task Create(Candidate candidate)
         {
-            await _httpClient.PostAsJsonAsync("/api/candidate/", candidate);
+            await _httpClient.PostAsJsonAsync("api/candidate", candidate);
         }
 
         public async Task Delete(int candidateId)
@@ -42,63 +66,9 @@ namespace Candidate_BlazorWASM.Client.Services
             await _httpClient.DeleteAsync($"/api/candidate/{candidateId}");
         }
 
-        public IEnumerable<Candidate> Search(IEnumerable<Candidate> candidate, string searchStr)
+        public async Task UploadCV(UploadedFile file)
         {
-            return candidate.Where(x => x.FullName.ToLower().Contains(searchStr.ToLower()));
-        }
-
-        public async Task<IEnumerable<Candidate>> GetByStatus(int status)
-        {
-            var result = await GetAll();
-            return result.Where(x => x.Status == status);
-        }
-
-        public async Task<IEnumerable<Candidate>> GetByStatus(int status1, int status2)
-        {
-            var result = await GetAll();
-            return result.Where(x => x.Status == status1 || x.Status == status2);
-        }
-
-        public IEnumerable<Candidate> GetWithFiltering(IEnumerable<Candidate> candidate, int positionId, int levelId)
-        {
-            if(positionId != 0)
-            {
-                candidate = candidate.Where(x => x.PositionId == positionId);
-            }
-            if (levelId != 0)
-            {
-                candidate = candidate.Where(x => x.LevelId == levelId);
-            }
-            return candidate;
-        }
-
-        public IEnumerable<Candidate> GetWithFiltering(IEnumerable<Candidate> candidate, int positionId, int levelId, int? isContacted, DateTime? fromDate, DateTime? toDate, string location)
-        {
-            if (positionId != 0)
-            {
-                candidate = candidate.Where(x => x.PositionId == positionId);
-            }
-            if (levelId != 0)
-            {
-                candidate = candidate.Where(x => x.LevelId == levelId);
-            }
-            if (isContacted != null)
-            {
-                candidate = candidate.Where(x => x.InterContacted == isContacted);
-            }
-            if (fromDate != null)
-            {
-                candidate = candidate.Where(x => x.InterTime > fromDate);
-            }
-            if (toDate != null)
-            {
-                candidate = candidate.Where(x => x.InterTime < toDate);
-            }
-            if (!string.IsNullOrEmpty(location))
-            {
-                candidate = candidate.Where(x => x.InterLocation == location);
-            }
-            return candidate;
+            await _httpClient.PostAsJsonAsync("api/upload", file);
         }
     }
 }

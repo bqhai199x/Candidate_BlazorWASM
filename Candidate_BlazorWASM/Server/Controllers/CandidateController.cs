@@ -1,7 +1,9 @@
 ﻿using Candidate_BlazorWASM.Server.Repositories;
 using Candidate_BlazorWASM.Shared;
+using Candidate_BlazorWASM.Shared.RequestFeatures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,17 +22,11 @@ namespace Candidate_BlazorWASM.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Candidate>>> GetCandidate()
+        public async Task<IActionResult> Get([FromQuery] Parameters parameters)
         {
-            try
-            {
-                return Ok(await _candidateRepository.GetAll());
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error retrieving data from the database");
-            }
+            var candidates = await _candidateRepository.GetAll(parameters);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(candidates.MetaData));
+            return Ok(candidates);
         }
 
         [HttpGet("{id:int}")]
@@ -71,23 +67,14 @@ namespace Candidate_BlazorWASM.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Candidate>> PostCandidate(Candidate candidate)
+        public async Task<IActionResult> PostCandidate(Candidate candidate)
         {
-            try
-            {
-                if (candidate == null)
-                    return BadRequest();
+            if (candidate == null)
+                return BadRequest();
 
-                var createdCandidate = await _candidateRepository.Create(candidate);
-
-                return CreatedAtAction(nameof(GetCandidate),
-                    new { id = createdCandidate.CandidateId }, createdCandidate);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error creating new candidate record");
-            }
+            //model validation…
+            await _candidateRepository.Create(candidate);
+            return Created("", candidate);
         }
 
         [HttpDelete("{id}")]

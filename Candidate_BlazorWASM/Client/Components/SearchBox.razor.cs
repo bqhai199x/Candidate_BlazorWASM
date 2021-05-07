@@ -1,23 +1,26 @@
-﻿using Candidate_BlazorWASM.Client.Services;
-using Candidate_BlazorWASM.Shared;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Components;
+using System.Threading;
 
 namespace Candidate_BlazorWASM.Client.Components
 {
     public partial class SearchBox
     {
+        public string SearchTerm { get; set; }
         [Parameter]
-        public EventCallback<string> OnSearchSubmit { get; set; }
+        public EventCallback<string> OnSearchChanged { get; set; }
 
-        public string searchStr { get; set; }
+        private Timer _timer;
 
-        private void SearchSubmit()
+        private void SearchChanged()
         {
-            OnSearchSubmit.InvokeAsync(searchStr);
+            if (_timer != null)
+                _timer.Dispose();
+            _timer = new Timer(OnTimerElapsed, null, 500, 0);
+        }
+        private void OnTimerElapsed(object sender)
+        {
+            OnSearchChanged.InvokeAsync(SearchTerm);
+            _timer.Dispose();
         }
     }
 }

@@ -11,10 +11,13 @@
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CandidateId { get; set; }
 
+        [Required(ErrorMessage = "Vị trí không được để trống!")]
         public int? PositionId { get; set; }
 
+        [Required(ErrorMessage = "Chức danh không được để trống!")]
         public int? LevelId { get; set; }
 
+        [Required(ErrorMessage = "Tên không được để trống!")]
         public string FullName { get; set; }
 
         public string Birthday { get; set; }
