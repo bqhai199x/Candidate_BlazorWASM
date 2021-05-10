@@ -21,20 +21,16 @@ namespace Candidate_BlazorWASM.Client.Components
         [Inject]
         ICandidateService candidateService { get; set; }
 
-        [Parameter]
-        public int CandiId { get; set; }
-
         private Candidate candi { get; set; } = new();
 
         private List<Level> lstLevel = new();
 
         private List<Position> lstPosition = new();
 
-        [Parameter]
-        public EventCallback OnClose { get; set; }
+        public bool Display { get; set; }
 
         [Parameter]
-        public bool Display { get; set; }
+        public EventCallback OnClose { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -42,18 +38,20 @@ namespace Candidate_BlazorWASM.Client.Components
             lstPosition = (await positionService.GetAll()).ToList();
         }
 
-        protected override async Task OnParametersSetAsync()
+        public async Task Show(int id)
         {
             candi = new();
-            if (CandiId != 0)
+            if (id != 0)
             {
-                candi = await candidateService.GetById(CandiId);
+                candi = await candidateService.GetById(id);
             }
+            Display = true;
+            StateHasChanged();
         }
-        private async Task Hide()
-        {
+
+        private void Hide()
+        {        
             Display = false;
-            await OnClose.InvokeAsync();
             StateHasChanged();
         }
 
@@ -62,7 +60,7 @@ namespace Candidate_BlazorWASM.Client.Components
         protected void OnInputFileChange(InputFileChangeEventArgs e)
         {
             selectedFiles = e.File;
-            this.StateHasChanged();
+            StateHasChanged();
         }
 
         private async Task Save()
@@ -85,7 +83,7 @@ namespace Candidate_BlazorWASM.Client.Components
                 selectedFiles = null;
             }
 
-            if (CandiId == 0)
+            if (candi.CandidateId == 0)
             {
                 await candidateService.Create(candi);
             }
@@ -93,7 +91,8 @@ namespace Candidate_BlazorWASM.Client.Components
             {
                 await candidateService.Update(candi);
             }
-            await Hide();
+            await OnClose.InvokeAsync();
+            Hide();
         }
     }
 }

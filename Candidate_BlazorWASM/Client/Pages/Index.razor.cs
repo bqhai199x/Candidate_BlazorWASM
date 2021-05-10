@@ -18,14 +18,18 @@ namespace Candidate_BlazorWASM.Client.Pages
         [Inject]
         public IJSRuntime Js { get; set; }
 
+        [Inject]
+        public HttpInterceptorService Interceptor { get; set; }
+
         private List<Candidate> lstCandi = new();
 
         public MetaData MetaData { get; set; } = new MetaData();
 
         private Parameters parameters = new Parameters();
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task OnInitializedAsync()
         {
+            Interceptor.RegisterEvent();
             await GetCandidates();
         }
         protected async Task SearchChanged(string searchTerm)
@@ -40,7 +44,7 @@ namespace Candidate_BlazorWASM.Client.Pages
             parameters.PageNumber = page;
             await GetCandidates();
         }
-        protected async Task GetCandidates()
+        public async Task GetCandidates()
         {
             var pagingResponse = await candidateService.GetAll(parameters);
             lstCandi = pagingResponse.Items;
@@ -53,22 +57,6 @@ namespace Candidate_BlazorWASM.Client.Pages
             await GetCandidates();
         }
 
-        //Show Modal Add Edit
-        public int CandiId { get; set; }
-        public bool Display { get; set; }
-        protected void ShowInfo(int candiId)
-        {
-            Display = true;
-            CandiId = candiId;
-            StateHasChanged();
-        }
-
-        protected async Task OnClose()
-        {
-            await GetCandidates();
-            Display = false;
-        }
-
         protected async Task Delete(int candiId)
         {
             var candiName = lstCandi.FirstOrDefault(x => x.CandidateId == candiId);
@@ -79,5 +67,21 @@ namespace Candidate_BlazorWASM.Client.Pages
                 await GetCandidates();
             }
         }
+
+        public ShowCVModal CVModal { get; set; }
+
+        public AddEditModal InfoModal { get; set; }
+
+        protected async Task ShowCV(int id)
+        {
+            await CVModal.Show(id);
+        }
+
+        protected async Task ShowInfo(int id)
+        {
+            await InfoModal.Show(id);
+        }
+
+        public void Dispose() => Interceptor.DisposeEvent();
     }
 }

@@ -1,0 +1,18 @@
+﻿@if (Display)
+{
+    <div class="modal fade show d-block">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">CV ứng viên @candi.FullName</h5>
+                    <button type="button" class="close" @onclick="Hide">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <embed src="@CVPath" frameborder="0" width="100%" height="600px" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

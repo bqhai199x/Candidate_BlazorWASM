@@ -21,8 +21,8 @@ namespace Candidate_BlazorWASM.Server.Repositories
             var candidates = await _context.Candidate
                 .Search(parameters.SearchTerm)
                 .Sort(parameters.OrderBy)
-                .Include(x => x.Level)
-                .Include(x => x.Position)
+                //.Include(x => x.Level)
+                //.Include(x => x.Position)
                 .ToListAsync();
 
             return PagedList<Candidate>
