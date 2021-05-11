@@ -2,7 +2,9 @@
 using Candidate_BlazorWASM.Server.Extensions;
 using Candidate_BlazorWASM.Shared;
 using Candidate_BlazorWASM.Shared.RequestFeatures;
+using Candidate_BlazorWASM.Shared.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Candidate_BlazorWASM.Server.Repositories
@@ -16,24 +18,39 @@ namespace Candidate_BlazorWASM.Server.Repositories
             _context = context;
         }
 
-        public async Task<PagedList<Candidate>> GetAll(Parameters parameters)
+        public async Task<PagedList<CandidateVM>> GetAll(Parameters parameters)
         {
-            var candidates = await _context.Candidate
+            var candidates = await (
+                from c in _context.Candidate
+                join p in _context.Position on c.PositionId equals p.PositionId
+                join l in _context.Level on c.LevelId equals l.LevelId
+                select new CandidateVM
+                {
+                    CandidateId = c.CandidateId,
+                    PositionId = p.PositionId,
+                    PositionName = p.PositionName,
+                    LevelId = c.LevelId,
+                    LevelName = l.LevelName,
+                    FullName = c.FullName,
+                    Birthday = c.Birthday,
+                    Address = c.Address,
+                    IntroduceName = c.IntroduceName,
+                    Email = c.Email,
+                    CVPath = c.CVPath,
+                    Phone = c.Phone,
+                    Status = c.Status
+                })
                 .Search(parameters.SearchTerm)
                 .Sort(parameters.OrderBy)
-                //.Include(x => x.Level)
-                //.Include(x => x.Position)
                 .ToListAsync();
 
-            return PagedList<Candidate>
+            return PagedList<CandidateVM>
                 .ToPagedList(candidates, parameters.PageNumber, parameters.PageSize);
         }
 
         public async Task<Candidate> GetById(int candidateId)
         {
             return await _context.Candidate
-                .Include(x => x.Level)
-                .Include(x => x.Position)
                 .FirstOrDefaultAsync(x => x.CandidateId == candidateId);
         }
 
@@ -87,6 +104,6 @@ namespace Candidate_BlazorWASM.Server.Repositories
             return null;
         }
 
-        
+
     }
 }

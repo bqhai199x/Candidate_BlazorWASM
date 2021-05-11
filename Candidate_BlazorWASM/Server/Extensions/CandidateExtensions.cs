@@ -4,12 +4,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Linq.Dynamic.Core;
+using Candidate_BlazorWASM.Shared.ViewModels;
 
 namespace Candidate_BlazorWASM.Server.Extensions
 {
     public static class CandidateExtensions
     {
-        public static IQueryable<Candidate> Search(this IQueryable<Candidate> candidates, string searchTearm)
+        public static IQueryable<CandidateVM> Search(this IQueryable<CandidateVM> candidates, string searchTearm)
         {
             if (string.IsNullOrWhiteSpace(searchTearm))
                 return candidates;
@@ -17,13 +18,13 @@ namespace Candidate_BlazorWASM.Server.Extensions
             return candidates.Where(p => p.FullName.ToLower().Contains(lowerCaseSearchTerm));
         }
 
-        public static IQueryable<Candidate> Sort(this IQueryable<Candidate> candidates, string orderByQueryString)
+        public static IQueryable<CandidateVM> Sort(this IQueryable<CandidateVM> candidates, string orderByQueryString)
         {
             if (string.IsNullOrWhiteSpace(orderByQueryString))
                 return candidates.OrderBy(e => e.FullName);
 
             var orderParams = orderByQueryString.Trim().Split(',');
-            var propertyInfos = typeof(Candidate).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var propertyInfos = typeof(CandidateVM).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var orderQueryBuilder = new StringBuilder();
             foreach (var param in orderParams)
             {

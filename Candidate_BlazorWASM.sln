@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Candidate_BlazorWASM.Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Candidate_BlazorWASM.Shared", "Candidate_BlazorWASM\Shared\Candidate_BlazorWASM.Shared.csproj", "{17C55136-C6E7-47B9-B0DC-3E535D1FF25D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Candidate_BlazorWASM.Components", "Candidate_BlazorWASM\Components\Candidate_BlazorWASM.Components.csproj", "{E642AC85-ED82-4F87-9C74-BA39E62FF8FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Candidae_Blazor.Toastr", "Candidate_BlazorWASM\Toastr\Candidae_Blazor.Toastr.csproj", "{4D62C880-8DA1-40CC-923E-FFDA461E8597}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{17C55136-C6E7-47B9-B0DC-3E535D1FF25D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17C55136-C6E7-47B9-B0DC-3E535D1FF25D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17C55136-C6E7-47B9-B0DC-3E535D1FF25D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E642AC85-ED82-4F87-9C74-BA39E62FF8FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E642AC85-ED82-4F87-9C74-BA39E62FF8FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E642AC85-ED82-4F87-9C74-BA39E62FF8FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E642AC85-ED82-4F87-9C74-BA39E62FF8FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D62C880-8DA1-40CC-923E-FFDA461E8597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D62C880-8DA1-40CC-923E-FFDA461E8597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D62C880-8DA1-40CC-923E-FFDA461E8597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D62C880-8DA1-40CC-923E-FFDA461E8597}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

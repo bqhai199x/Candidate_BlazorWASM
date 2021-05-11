@@ -21,8 +21,8 @@
 <table class="table table-bordered">
     <thead>
         <tr class="text-center bg-secondary text-white">
-            @*<th scope="col">Chức danh</th>
-                <th scope="col">Vị trí</th>*@
+            <th scope="col">Chức danh</th>
+            <th scope="col">Vị trí</th>
             <th scope="col">Họ tên</th>
             <th scope="col">Ngày sinh</th>
             <th scope="col">Địa chỉ</th>
@@ -37,8 +37,8 @@
         @foreach (var item in lstCandi)
         {
             <tr>
-                @*<td>@item.Level.LevelName</td>
-                    <td>@item.Position.PositionName</td>*@
+                <td>@item.LevelName</td>
+                <td>@item.PositionName</td>
                 <td>@item.FullName</td>
                 <td>@item.Birthday</td>
                 <td>@item.Address</td>

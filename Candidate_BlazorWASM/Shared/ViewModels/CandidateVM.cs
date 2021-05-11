@@ -12,11 +12,11 @@ namespace Candidate_BlazorWASM.Shared.ViewModels
 
         public int? PositionId { get; set; }
 
-        public int? PositionName { get; set; }
+        public string PositionName { get; set; }
 
         public int? LevelId { get; set; }
 
-        public int? LevelName { get; set; }
+        public string LevelName { get; set; }
 
         public string FullName { get; set; }
 

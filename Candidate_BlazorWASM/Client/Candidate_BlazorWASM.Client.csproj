@@ -15,7 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Components\Candidate_BlazorWASM.Components.csproj" />
     <ProjectReference Include="..\Shared\Candidate_BlazorWASM.Shared.csproj" />
+    <ProjectReference Include="..\Toastr\Candidae_Blazor.Toastr.csproj" />
   </ItemGroup>
 
 </Project>

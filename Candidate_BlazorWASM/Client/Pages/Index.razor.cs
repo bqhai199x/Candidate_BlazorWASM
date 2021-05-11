@@ -2,6 +2,7 @@
 using Candidate_BlazorWASM.Client.Services;
 using Candidate_BlazorWASM.Shared;
 using Candidate_BlazorWASM.Shared.RequestFeatures;
+using Candidate_BlazorWASM.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace Candidate_BlazorWASM.Client.Pages
         [Inject]
         public HttpInterceptorService Interceptor { get; set; }
 
-        private List<Candidate> lstCandi = new();
+        private List<CandidateVM> lstCandi = new();
 
         public MetaData MetaData { get; set; } = new MetaData();
 

@@ -1,6 +1,7 @@
 ﻿using Candidate_BlazorWASM.Client.Features;
 using Candidate_BlazorWASM.Shared;
 using Candidate_BlazorWASM.Shared.RequestFeatures;
+using Candidate_BlazorWASM.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,7 +11,7 @@ namespace Candidate_BlazorWASM.Client.Services
 {
     public interface ICandidateService
     {
-        Task<PagingResponse<Candidate>> GetAll(Parameters parameters);
+        Task<PagingResponse<CandidateVM>> GetAll(Parameters parameters);
 
         Task<Candidate> GetById(int candidateId);
 

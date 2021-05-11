@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Candidae_Blazor.Toastr.Services;
 using Candidate_BlazorWASM.Client.AuthProviders;
 using Candidate_BlazorWASM.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -36,6 +37,8 @@ namespace Candidate_BlazorWASM.Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+
+            builder.Services.AddBlazorToastr();
 
             await builder.Build().RunAsync();
         }

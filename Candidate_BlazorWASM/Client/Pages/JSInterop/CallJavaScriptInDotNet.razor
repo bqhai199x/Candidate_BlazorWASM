@@ -1,0 +1,77 @@
+﻿@page "/jsindotnet"
+
+<div class="row py-2">
+    <div class="col-md-5">
+        <h4>
+            Example for calling a JS function returning void:
+        </h4>
+    </div>
+    <div class="col-md-5">
+        <button type="button" class="btn btn-info" @onclick="ShowAlertWindow">Show Alert Window</button>
+    </div>
+</div>
+
+<div class="row py-2">
+    <div class="col-md-5">
+        <h4>
+            Example for calling a JS function returning result:
+        </h4>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-info" @onclick="RegisterEmail">Register Email</button>
+    </div>
+    <div class="col-md-4">
+        @_registrationResult
+    </div>
+</div>
+
+<div class="row py-2">
+    <div class="col-md-5">
+        <h4>
+            Calling a JS function that returns an object:
+        </h4>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-info" @onclick="ExtractEmailInfo">Email Details</button>
+    </div>
+    <div class="col-md-4">
+        @_detailsMessage
+    </div>
+</div>
+
+<div class="row py-2">
+    <div class="col-md-5">
+        <h4>
+            Passing HTML Reference to JS Function
+        </h4>
+    </div>
+    <div class="col-md-3">
+        <input type="text" @ref="_elRef" class="form-control" />
+    </div>
+    <div class="col-md-4">
+        <button type="button" @onclick="FocusAndStyleElement" class="btn btn-info">Focus</button>
+    </div>
+</div>
+
+<div class="row py-2">
+    <div class="col-md-5">
+        <h4>
+            Passing Input Component to JS Function
+        </h4>
+    </div>
+    <div class="col-md-3">
+        <EditForm Model="_emailDetails">
+            <InputText id="dummyInputComponent" class="form-control"
+                       @bind-Value="@_emailDetails.Name" />
+        </EditForm>
+    </div>
+    <div class="col-md-4">
+        <button type="button" @onclick="FocusAndStyleInputComonent" class="btn btn-info">Focus</button>
+    </div>
+</div>
+
+<div class="row py-2">
+    <div class="col alert alert-danger">
+        @_errorMessage
+    </div>
+</div>

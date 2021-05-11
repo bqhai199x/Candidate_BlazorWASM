@@ -1,6 +1,7 @@
 ﻿using Candidate_BlazorWASM.Client.Features;
 using Candidate_BlazorWASM.Shared;
 using Candidate_BlazorWASM.Shared.RequestFeatures;
+using Candidate_BlazorWASM.Shared.ViewModels;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace Candidate_BlazorWASM.Client.Services
             _httpClient = httpClient;
         }
 
-        public async Task<PagingResponse<Candidate>> GetAll(Parameters parameters)
+        public async Task<PagingResponse<CandidateVM>> GetAll(Parameters parameters)
         {
             var queryStringParam = new Dictionary<string, string>
             {
@@ -37,9 +38,9 @@ namespace Candidate_BlazorWASM.Client.Services
             {
                 throw new ApplicationException(content);
             }
-            var pagingResponse = new PagingResponse<Candidate>
+            var pagingResponse = new PagingResponse<CandidateVM>
             {
-                Items = JsonSerializer.Deserialize<List<Candidate>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }),
+                Items = JsonSerializer.Deserialize<List<CandidateVM>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }),
                 MetaData = JsonSerializer.Deserialize<MetaData>(response.Headers.GetValues("X-Pagination").First(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
             };
 
